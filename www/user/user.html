@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <style type="text/css">
+    .panel-heading {
+    padding: 10px 15px;
+    background-color: #353535;
+    border-top: 1px solid #ddd;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    position: absolute;
+    top: 0%;
+    cursor:pointer;
+    opacity:0.8;
+    color:white;
+    border:none;
+}
+
+.panel-body {
+    padding: 60px 4% 5% 7%;
+}
+
+.box {
+    padding:2%;
+    border:1px #ddd solid;
+    cursor:pointer;
+}
+
+
+.remove-decoration {
+    text-decoration:none !important;
+    color:#333;
+    font-size:12px;
+}
+
+/*=========================
+  Icons
+ ================= */
+
+/* footer social icons */
+ul.social-network {
+    list-style: none;
+	display: inline;
+	margin-left:0 !important;
+	padding: 0;
+}
+ul.social-network li {
+	display: inline;
+	margin: 0 5px;
+}
+
+
+/* footer social icons */
+#IdFooter .social-network a.icoRss:hover {
+	background-color: #F56505;
+}
+#IdFooter .social-network a.icoFacebook:hover {
+	background-color:#3B5998;
+}
+#IdFooter .social-network a.icoTwitter:hover {
+	background-color:#33ccff;
+}
+#IdFooter .social-network a.icoGoogle:hover {
+	background-color:#BD3518;
+}
+#IdFooter .social-network a.icoVimeo:hover {
+	background-color:#0590B8;
+}
+#IdFooter .social-network a.icoLinkedin:hover {
+	background-color:#007bb7;
+}
+#IdFooter .social-network a.icoRss:hover i, .social-network a.icoFacebook:hover i, .social-network a.icoTwitter:hover i,
+#IdFooter .social-network a.icoGoogle:hover i, .social-network a.icoVimeo:hover i, .social-network a.icoLinkedin:hover i {
+	color:#fff;
+}
+#IdFooter a.socialIcon:hover, .socialHoverClass {
+	color:#44BCDD;
+}
+
+#IdFooter .social-circle li a {
+	display:inline-block;
+	position:relative;
+	margin:0 auto 0 auto;
+	-moz-border-radius:50%;
+	-webkit-border-radius:50%;
+	border-radius:50%;
+	text-align:center;
+	width: 35px;
+	height: 35px;
+	font-size:18px;
+}
+#IdFooter .social-circle li i {
+	margin:0;
+	line-height:38px;
+	text-align: center;
+}
+
+#IdFooter .social-circle li a:hover i, .triggeredHover {
+	-moz-transform: rotate(360deg);
+	-webkit-transform: rotate(360deg);
+	-ms--transform: rotate(360deg);
+	transform: rotate(360deg);
+	-webkit-transition: all 0.2s;
+	-moz-transition: all 0.2s;
+	-o-transition: all 0.2s;
+	-ms-transition: all 0.2s;
+	transition: all 0.2s;
+}
+#IdFooter .social-circle i {
+	color: #fff;
+	-webkit-transition: all 0.8s;
+	-moz-transition: all 0.8s;
+	-o-transition: all 0.8s;
+	-ms-transition: all 0.8s;
+	transition: all 0.8s;
+}
+
+#IdFooter a {
+ background-color: #D3D3D3;   
+}
+    </style>
+    <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        var defaultCSS = document.getElementById('bootstrap-css');
+        function changeCSS(css){
+            if(css) $('head > link').filter(':first').replaceWith('<link rel="stylesheet" href="'+ css +'" type="text/css" />'); 
+            else $('head > link').filter(':first').replaceWith(defaultCSS); 
+        }
+        $( document ).ready(function() {
+          var iframe_height = parseInt($('html').height()); 
+          window.parent.postMessage( iframe_height, 'https://bootsnipp.com');
+          $("#nickName").empty();
+          $("#nickName").append(localStorage.getItem("userName"));
+          
+          //buscando datos del usuario
+          	var id=localStorage.getItem("userId");
+			var url = 'http://35.192.11.211/Restaurant_Recomend/database/user_management/user_x_id.php'
+			var dataString="id="+id;
+			$.ajax({
+				type: "GET",
+				url: url,
+				data: dataString,
+				dataType: "json",
+				crossDomain: true,
+				cache: false,
+				beforeSend: function(){},
+				success: function(result){
+					$("#datos").empty();
+					$("#IdFooter").empty();
+					if(result == 0){
+						alert("Usuario no existe");
+					}else {
+						$.each(result, function(i, field){
+							 $("#datos").append("<h2>Nombre: "+field.name+"</h2><p>Comida Preferida: "+field.category_name+"</p>"+"<p><a href='#' class='remove-decoration'><i class='glyphicon glyphicon-envelope'></i> Email:  "+field.email +"</a> <br><a href='http://sachitha-seram.branded.me/' id='page' target='_blank' class='remove-decoration'><i class='glyphicon glyphicon-globe'></i> Pagina: google.com</a><br><a href='#' class='remove-decoration'> <i class='glyphicon glyphicon-phone'></i>Telefono: +94 710 000 000</a> </p>");
+							 $("#IdFooter").append('<a onclick="edit('+field.id+',\''+field.name+'\',\''+field.email+'\','+field.favorite_cat_restaurant+',\''+field.password+'\')">Edit</a>');
+						});
+					}
+				},
+				error: function(request, status, error){
+					alert(request.responseText+" | "+status+" | "+error);
+				}				
+			});
+        });
+        
+        //editar datos del usuario
+        function edit(id,name,email,cat,password){
+        	$("#details").css("display", "none");
+        	$("#update").css("display", "block");
+        	$("#name_update").val(name);
+        	$("#email_update").val(email);
+        	$("#IdFooter_update").empty();
+        	$("#IdFooter_update").append("<a onclick='update("+id+")'>Update</a><br/><a onclick='cancel()'>Cancel</a>");
+        	$(document).ready(function(){
+        		var url="http://35.192.11.211/Restaurant_Recomend/database/restaurant_management/return_cat_array.php";
+        		$.getJSON(url,function(result){
+        			$("#sel1").empty();
+        			$.each(result, function(i, field){
+        				if(cat == field.category_id){
+        					$("#sel1").append("<option selected='selected' value='"+field.category_id+"'>"+field.category_name+"</option>");
+        				}else{
+        					$("#sel1").append("<option value='"+field.category_id+"'>"+field.category_name+"</option>");	
+        				}
+        			});
+        		});
+        	});
+        }
+        
+        //ejecucion del update
+        function update(id){
+            //alert();
+    		 var name=$("#name_update").val();
+    		 var email=$("#email_update").val();
+    		 var favorite_cat_restaurant=$("#sel1").val();
+    		 var dataString="id="+id+"&name="+name+"&email="+email+"&favorite_cat_restaurant="+favorite_cat_restaurant+"&update=";
+    		 //alert(dataString);
+    		 $.ajax({
+    			 type: "POST",
+    			 url:"http://35.192.11.211/Restaurant_Recomend/database/user_management/update.php",
+    			 data: dataString,
+    			 crossDomain: true,
+    			 cache: false,
+    			 beforeSend: function(){},
+    			 success: function(data){
+    				 if(data=="success"){
+    				 	//alert("Updated");
+    					 window.location.replace("user.html");
+    				 }
+    				 else if(data=="error"){
+    				 	alert("error de update");
+    				 }
+    			 }
+    		 });
+        }
+        
+        //cancelar edicion
+        function cancel(){
+        	$("#details").css("display", "block");
+        	$("#update").css("display", "none");
+        }
+        
+        //desvincular cuenta
+        function unlinkAccount(){
+        	 
+        }
+    </script>
+</head>
+<body>
+
+   
+ <div class="container-fluid" id="details">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-4"></div>
+                    <div class="col-md-4">
+                        <div class="panel panel-default">
+                            <div id="nickName"class="panel-heading"><img src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQ7pNHU2p0-Dg-GKO_4dVSwRZaX-tawZ2pzDD6lQ-_D_Bwil8dw" /> | | </div>
+                            <div class="panel-body text-left">
+                                <div class="row">
+                                    <div class="col-md-12 ">
+                                            <a class="" href="#">
+                                                <img class="media-object dp img-circle" src="https://st.depositphotos.com/2704315/3185/v/950/depositphotos_31854223-stock-illustration-vector-user-profile-avatar-man.jpg" width="100px"></img>
+                                            </a>
+                                    </div>
+                                    <div class="col-md-12" id="datos"></div>
+                                </div>
+                            </div>
+                            <div id="IdFooter" class="panel-footer text-right">
+								 <p>User Details </p>
+                            </div>
+                        </div>
+                    </div>
+                <div class="col-md-4"></div>
+                </div>
+        </div>
+    </div>
+     <!-- la etiqueta div "details" desaparece cuando se hace click en Edit y aparece la etiqueta div update-->
+    <div id="update" style="display:none" class="container-fluid">
+    	 <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-4"></div>
+                    <div class="col-md-4">
+                        <div class="panel panel-default">
+                            <div id="nickName"class="panel-heading"><img src="" /></div>
+                            <div class="panel-body text-left">
+                                <div class="row">
+                                    <div class="col-md-12 ">
+                                            <a class="" href="#">
+                                                <img class="media-object dp img-circle" src="https://st.depositphotos.com/2704315/3185/v/950/depositphotos_31854223-stock-illustration-vector-user-profile-avatar-man.jpg" width="100px"></img>
+                                            </a>
+                                    </div>
+                                    <div class="col-md-12" id="datos_update">
+                                   	 	<h2>Nombre:</h2><input name="name" id="name_update" type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon2">
+                                   	 		<h4><i class='glyphicon glyphicon-envelope'></i> Comida Preferida:</h4>
+                                   	 		<div class="form-group">
+											  <select class="form-control" id="sel1">
+											    
+											  </select>
+											</div>
+                                   	 		<br>
+	                                   	 	<h4><i class='glyphicon glyphicon-envelope'></i> Email:</h4>
+	                                   	 	<input name="name" id="email_update" type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon2"><br>
+	                                   	 	<a href='http://sachitha-seram.branded.me/' id='page' target='_blank' class='remove-decoration'><i class='glyphicon glyphicon-globe'></i> Pagina: google.com</a><br>
+	                                   	 	<a href='#' class='remove-decoration'> <i class='glyphicon glyphicon-phone'></i>Telefono: +94 710 000 000</a> 
+                                   	 	
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="IdFooter_update" class="panel-footer text-right"></div>
+                        </div>
+                    </div>
+                <div class="col-md-4"></div>
+                </div>
+        </div>
+    </div>
+    
+	<script type="text/javascript">
+	
+	</script>
+</body>
+</html>

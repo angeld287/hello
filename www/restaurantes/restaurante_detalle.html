@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex, nofollow">
+
+    <title>User Detail Panel - Bootsnipp.com</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <style type="text/css">
+    body {background: #EAEAEA;}
+.user-details {position: relative; padding: 0;}
+.user-details .user-image {position: relative;  z-index: 1; width: 100%; text-align: center;}
+ .user-image img { clear: both; margin: auto; position: relative;}
+
+.user-details .user-info-block {width: 100%; position: absolute; top: 55px; background: rgb(255, 255, 255); z-index: 0; padding-top: 35px;}
+ .user-info-block .user-heading {width: 100%; text-align: center; margin: 10px 0 0;}
+ .user-info-block .navigation {float: left; width: 100%; margin: 0; padding: 0; list-style: none; border-bottom: 1px solid #428BCA; border-top: 1px solid #428BCA;}
+  .navigation li {float: left; margin: 0; padding: 0;}
+   .navigation li a {padding: 20px 30px; float: left;}
+   .navigation li.active a {background: #428BCA; color: #fff;}
+ .user-info-block .user-body {float: left; padding: 5%; width: 90%;}
+  .user-body .tab-content > div {float: left; width: 100%;}
+  .user-body .tab-content h4 {width: 100%; margin: 10px 0; color: #333;}
+    </style>
+    <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $( document ).ready(function() {
+        	var dataString = window.location.search.substring(1);
+        	$('#Iframe_map').attr('src', "map_details.html?"+dataString);
+        	$('#Iframe_rating').attr('src', "rating/rating.html?"+dataString);
+			var url = 'http://35.192.11.211/Restaurant_Recomend/database/restaurant_management/restaurant_x_id.php'
+			$.ajax({
+				type: "GET",
+				url: url,
+				data: dataString,
+				dataType: "json",
+				crossDomain: true,
+				cache: false,
+				beforeSend: function(){},
+				success: function(result){
+					$("#datos").empty();
+					$("#IdFooter").empty();
+					if(result == 0){
+						alert("restaurante no existe");
+					}else {
+						$.each(result, function(i, field){
+							 $("#rest_name").append(field.name);
+							 $("#categoria").append(field.category_name);
+							 $("#telefono").append(' 	<a onclick="call(\''+field.phone_number+'\')" class="btn btn-default btn-primary btn-lg"><span class="glyphicon glyphicon-earphone"></span> '+field.phone_number+'</a>');
+							 $("#direccion").append(field.address);
+						});
+					}
+				},
+				error: function(request, status, error){
+					alert(request.responseText+" | "+status+" | "+error);
+				}				
+			});
+        });
+		
+		function call(numero){
+			$(document).ready(function() {
+				window.plugins.CallNumber.callNumber(function onSuccess(result){
+														  console.log("Success:"+result);
+													},
+													function onError(result) {
+														  console.log("Error:"+result);
+													},
+													numero, 
+													true
+				);
+				
+			});
+		}
+    </script>
+</head>
+<body>
+	<div class="container">
+	<div class="row">
+		<div class="col-sm-12 col-md-4 user-details">
+            <div class="user-image">
+                <img src="https://cdn1.tekrevue.com/wp-content/uploads/2015/04/map-location-pin.jpg" width="110px" height="100px" alt="Karan Singh Sisodia" title="Karan Singh Sisodia" class="img-circle">
+            </div>
+            <div class="user-info-block">
+                <div class="user-heading">
+                    <h3 id="rest_name"></h3>
+                    <span id="rest_address" class="help-block"></span>
+                </div>
+                <ul class="navigation">
+                    <li class="active">
+                        <a data-toggle="tab" href="#information">
+                            <span class="glyphicon glyphicon-align-left"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#ubication">
+                            <span class="glyphicon glyphicon-map-marker"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a data-toggle="tab" href="#rating">
+                            <span class="glyphicon glyphicon-star-empty"></span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="user-body">
+                    <div class="tab-content">
+                        <div id="information" class="tab-pane active">
+                            <div class="list-group">
+							  <div id="categoria" href="#" class="list-group-item">Categoria: </div>
+							  <div id="telefono" href="#" class="list-group-item">Telefono: </div>
+							  <div id="direccion" href="#" class="list-group-item">Direccion: </div>
+							</div>
+                        </div>
+                        <div id="ubication" class="tab-pane">
+                            <h4>Ubicacion</h4>
+                            <iframe id="Iframe_map" width="100%" height="480px" src="" frameborder='no'></iframe>
+                        </div>
+                        <div id="rating" class="tab-pane">
+                            <iframe id="Iframe_rating" width="100%" height="480px" src="" frameborder='no'></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+	</div>
+</div>
+	<script type="text/javascript"></script>
+</body>
+</html>
